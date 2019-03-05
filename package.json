@@ -1,0 +1,26 @@
+{
+  "name": "quiz",
+  "version": "1.0.0",
+  "description": "Proyecto quiz del Modulo5",
+  "main": "main.js",
+  "scripts": {
+    "start":"node main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/carloscvj/quiz.git"
+  },
+  "keywords": [
+    "quiz",
+    "core",
+    "node",
+    "npm"
+  ],
+  "author": "Carlos V.",
+  "license": "Unlicense",
+  "bugs": {
+    "url": "https://github.com/carloscvj/quiz/issues"
+  },
+  "homepage": "https://github.com/carloscvj/quiz#readme"
+}
