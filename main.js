@@ -18,6 +18,61 @@ const errlog = emsg => {
     console.log(`${colorize("Error", "red")}: ${colorize(colorize(emsg, "red"),"bgYellowBright")}`);
 };
 
+
+
+
+let quizzes = [
+    {
+        question:"Capital de Italia",
+        answer:"Roma"
+    },
+    {
+        question:"Capital de Francia",
+        answer:"París"
+    },
+    {
+        question:"Capital de España",
+        answer:"Madrid"
+    },
+    {
+        question:"Capital de Portugal",
+        answer:"Lisboa"
+    }
+
+];
+const count = () => quizzes.length;
+const add = (question, answer) => {
+    quizzes.push({
+        question:(question || "").trim(),
+        answer:(answer || "").trim()
+    });
+};
+const update = (id, question, answer) => {
+    const quiz = quizzes[id];
+    if( typeof quiz === "undefined") {
+        throw new Error("El valor del parámetro id no es válido");
+    }
+    quizzes.slice(id, 1, {
+        question:(question || "").trim(),
+        answer:(answer || "").trim()
+    });
+};
+const getAll = () => {JSON.parse(JSON.stringify(quizzes))};
+const getByIndex = id => {
+    const quiz = quizzes[id];
+    if( typeof quiz === "undefined") {
+        throw new Error("El valor del parámetro id no es válido");
+    }
+    return JSON.parse(JSON.stringify(quiz));
+};
+const deleteByIndex = id => {
+    const quiz = quizzes[id];
+    if( typeof quiz === "undefined") {
+        throw new Error("El valor del parámetro id no es válido");
+    }
+    quizzes.slice(id, 1);
+}
+
 biglog('CORE quiz',"green");
 
 const rl = readline.createInterface({
