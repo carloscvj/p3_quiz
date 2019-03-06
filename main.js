@@ -2,11 +2,23 @@ const readline = require('readline');
 const figlet = require('figlet');
 const chalk = require('chalk');
 
-console.log(
-    chalk.green.bold(
-        figlet.textSync('CORE quiz',{horizontalLayout:'full'})
-    )
-);
+const colorize = (msg, color) => {
+    if(typeof color !== "undefined") {
+        msg = chalk[color].bold(msg);
+    }
+    return msg;
+};
+const log = (msg, color) => {
+    console.log(colorize(msg, color));
+};
+const biglog = (msg, color) => {
+    log(figlet.textSync(msg, {horizontalLayout : 'full'}), color);
+};
+const errlog = emsg => {
+    console.log(`${colorize("Error", "red")}: ${colorize(colorize(emsg, "red"),"bgYellowBright")}`);
+};
+
+biglog('CORE quiz',"green");
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -17,7 +29,7 @@ const rl = readline.createInterface({
         // show all completions if none found
         return [hits.length ? hits : completions, line];
       },
-    prompt: 'quiz> '
+    prompt: colorize('quiz> ', 'blue')
 });
 
 rl.prompt();
@@ -64,8 +76,8 @@ rl.on('line', (line) => {
             creditsCmd();
             break;
         default:
-            console.log(`Comando desconocido '${cmd}'`);
-            console.log('Use help para ver todos los comandos disponibles');
+            console.log(`Comando desconocido '${colorize(cmd,'red')}'`);
+            console.log(`Use ${colorize('help', 'green')} para ver todos los comandos disponibles`);
             rl.prompt();
             break;
     }
@@ -75,17 +87,17 @@ rl.on('line', (line) => {
 });
 
 const helpCmd = () => {
-    console.log('Comandos:');
-    console.log('   h|help          Muestra esta ayuda');
-    console.log('   list            Lista de quizers existentes');
-    console.log('   show <id>       Muestra la pregunta y la respuesta del quiz indicado');
-    console.log('   add             Añade un nuevo quiz interactivamente');
-    console.log('   delete <id>     Borra el quiz indicado');
-    console.log('   edit <id>       Edita el quiz indicado');
-    console.log('   test <id>       Prueba el quiz indicado');
-    console.log('   p|play          Comienza el juego');
-    console.log('   credits         Créditos');
-    console.log('   q|quit          Sale del programa');
+    log('Comandos:', 'blue');
+    log('   h|help          Muestra esta ayuda', 'blue');
+    log('   list            Lista de quizers existentes', 'blue');
+    log('   show <id>       Muestra la pregunta y la respuesta del quiz indicado', 'blue');
+    log('   add             Añade un nuevo quiz interactivamente', 'blue');
+    log('   delete <id>     Borra el quiz indicado', 'blue');
+    log('   edit <id>       Edita el quiz indicado', 'blue');
+    log('   test <id>       Prueba el quiz indicado', 'blue');
+    log('   p|play          Comienza el juego', 'blue');
+    log('   credits         Créditos', 'blue');
+    log('   q|quit          Sale del programa', 'blue');
     rl.prompt();
 };
 
@@ -94,41 +106,41 @@ const quitCmd = () => {
 };
 
 const listCmd = () => {
-    console.log('   list            Lista de quizers existentes');
+    log('   list            Lista de quizers existentes', 'red');
     rl.prompt();
 };
 
 const showCmd = id => {
-    console.log('   show <id>       Muestra la pregunta y la respuesta del quiz indicado');
+    log('   show <id>       Muestra la pregunta y la respuesta del quiz indicado', 'red');
     rl.prompt();
 };
 
 const addCmd = () => {
-    console.log('   add             Añade un nuevo quiz interactivamente');
+    log('   add             Añade un nuevo quiz interactivamente', 'red');
     rl.prompt();
 };
 
 const deleteCmd = id => {
-    console.log('   delete <id>     Borra el quiz indicado');
+    log('   delete <id>     Borra el quiz indicado', 'red');
     rl.prompt();
 };
 
 const editCmd = id => {
-    console.log('   edit <id>       Edita el quiz indicado');
+    log('   edit <id>       Edita el quiz indicado', 'red');
     rl.prompt();
 };
 
 const testCmd = id => {
-    console.log('   test <id>       Prueba el quiz indicado');
+    log('   test <id>       Prueba el quiz indicado', 'red');
     rl.prompt();
 };
 
 const playCmd = () => {
-    console.log('   p|play          Comienza el juego');
+    log('   p|play          Comienza el juego', 'red');
     rl.prompt();
 };
 
 const creditsCmd = () => {           
-    console.log('   credits         Créditos');
+    log('   credits         Créditos', 'red');
     rl.prompt();
 };
