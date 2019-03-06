@@ -1,68 +1,134 @@
 const readline = require('readline');
+const figlet = require('figlet');
+const chalk = require('chalk');
 
-console.log("CORE quiz");
+console.log(
+    chalk.green.bold(
+        figlet.textSync('CORE quiz',{horizontalLayout:'full'})
+    )
+);
 
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
+    completer: (line) => {
+        const completions = 'h help q quit list show add delete edit test p play credits'.split(' ');
+        const hits = completions.filter((c) => c.startsWith(line));
+        // show all completions if none found
+        return [hits.length ? hits : completions, line];
+      },
     prompt: 'quiz> '
 });
 
 rl.prompt();
 
 rl.on('line', (line) => {
-    switch (line.trim()) {
+    let args=line.split(' ');
+    let cmd=args[0].toLowerCase().trim();
+
+    switch (cmd) {
         case '':
+            rl.prompt();
             break;
         case 'h':
         case 'help':
-            console.log('Comandos:');
-            console.log('   h|help          Muestra esta ayuda');
-            console.log('   list            Lista de quizers existentes');
-            console.log('   show <id>       Muestra la pregunta y la respuesta del quiz indicado');
-            console.log('   add             Añade un nuevo quiz interactivamente');
-            console.log('   delete <id>     Borra el quiz indicado');
-            console.log('   edit <id>       Edita el quiz indicado');
-            console.log('   test <id>       Prueba el quiz indicado');
-            console.log('   p|play          Comienza el juego');
-            console.log('   credits         Créditos');
-            console.log('   q|quit          Sale del programa');
+            helpCmd();
             break;
         case 'q':
         case 'quit':
-            rl.close();
+            quitCmd();
             break;
         case 'list':
-            console.log('   list            Lista de quizers existentes');
+            listCmd();
             break;
         case 'show':
-            console.log('   show <id>       Muestra la pregunta y la respuesta del quiz indicado');
+            showCmd(args[1]);
             break;
         case 'add':
-            console.log('   add             Añade un nuevo quiz interactivamente');
+            addCmd();
             break;
         case 'delete':
-            console.log('   delete <id>     Borra el quiz indicado');
+            deleteCmd(args[1]);
             break;
         case 'edit':
-            console.log('   edit <id>       Edita el quiz indicado');
+            editCmd(args[1]);
             break;
         case 'test':
-            console.log('   test            Prueba el quiz indicado');
+            testCmd(args[1]);
             break;
         case 'p':
         case 'play':
-            console.log('   p|play          Comienza el juego');
+            playCmd();
             break;
         case 'credits':            
-            console.log('   credits         Créditos');
+            creditsCmd();
             break;
         default:
-            console.log(`Say what? I might have heard '${line.trim()}'`);
+            console.log(`Comando desconocido '${cmd}'`);
+            console.log('Use help para ver todos los comandos disponibles');
+            rl.prompt();
             break;
     }
-    rl.prompt();
 }).on('close', () => {
-  console.log('Have a great day!');
+  console.log('Adiós');
   process.exit(0);
 });
+
+const helpCmd = () => {
+    console.log('Comandos:');
+    console.log('   h|help          Muestra esta ayuda');
+    console.log('   list            Lista de quizers existentes');
+    console.log('   show <id>       Muestra la pregunta y la respuesta del quiz indicado');
+    console.log('   add             Añade un nuevo quiz interactivamente');
+    console.log('   delete <id>     Borra el quiz indicado');
+    console.log('   edit <id>       Edita el quiz indicado');
+    console.log('   test <id>       Prueba el quiz indicado');
+    console.log('   p|play          Comienza el juego');
+    console.log('   credits         Créditos');
+    console.log('   q|quit          Sale del programa');
+    rl.prompt();
+};
+
+const quitCmd = () => {
+    rl.close();
+};
+
+const listCmd = () => {
+    console.log('   list            Lista de quizers existentes');
+    rl.prompt();
+};
+
+const showCmd = id => {
+    console.log('   show <id>       Muestra la pregunta y la respuesta del quiz indicado');
+    rl.prompt();
+};
+
+const addCmd = () => {
+    console.log('   add             Añade un nuevo quiz interactivamente');
+    rl.prompt();
+};
+
+const deleteCmd = id => {
+    console.log('   delete <id>     Borra el quiz indicado');
+    rl.prompt();
+};
+
+const editCmd = id => {
+    console.log('   edit <id>       Edita el quiz indicado');
+    rl.prompt();
+};
+
+const testCmd = id => {
+    console.log('   test <id>       Prueba el quiz indicado');
+    rl.prompt();
+};
+
+const playCmd = () => {
+    console.log('   p|play          Comienza el juego');
+    rl.prompt();
+};
+
+const creditsCmd = () => {           
+    console.log('   credits         Créditos');
+    rl.prompt();
+};
