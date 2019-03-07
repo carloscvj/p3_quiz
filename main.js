@@ -1,77 +1,6 @@
 const readline = require('readline');
-const figlet = require('figlet');
-const chalk = require('chalk');
-
-const colorize = (msg, color) => {
-    if(typeof color !== "undefined") {
-        msg = chalk[color].bold(msg);
-    }
-    return msg;
-};
-const log = (msg, color) => {
-    console.log(colorize(msg, color));
-};
-const biglog = (msg, color) => {
-    log(figlet.textSync(msg, {horizontalLayout : 'full'}), color);
-};
-const errlog = emsg => {
-    console.log(`${colorize("Error", "red")}: ${colorize(colorize(emsg, "red"),"bgYellowBright")}`);
-};
-
-
-
-
-let quizzes = [
-    {
-        question:"Capital de Italia",
-        answer:"Roma"
-    },
-    {
-        question:"Capital de Francia",
-        answer:"París"
-    },
-    {
-        question:"Capital de España",
-        answer:"Madrid"
-    },
-    {
-        question:"Capital de Portugal",
-        answer:"Lisboa"
-    }
-
-];
-const count = () => quizzes.length;
-const add = (question, answer) => {
-    quizzes.push({
-        question:(question || "").trim(),
-        answer:(answer || "").trim()
-    });
-};
-const update = (id, question, answer) => {
-    const quiz = quizzes[id];
-    if( typeof quiz === "undefined") {
-        throw new Error("El valor del parámetro id no es válido");
-    }
-    quizzes.slice(id, 1, {
-        question:(question || "").trim(),
-        answer:(answer || "").trim()
-    });
-};
-const getAll = () => {JSON.parse(JSON.stringify(quizzes))};
-const getByIndex = id => {
-    const quiz = quizzes[id];
-    if( typeof quiz === "undefined") {
-        throw new Error("El valor del parámetro id no es válido");
-    }
-    return JSON.parse(JSON.stringify(quiz));
-};
-const deleteByIndex = id => {
-    const quiz = quizzes[id];
-    if( typeof quiz === "undefined") {
-        throw new Error("El valor del parámetro id no es válido");
-    }
-    quizzes.slice(id, 1);
-}
+const {colorize,log, biglog, errlog} = require('./out');
+const cmds = require('./cmds');
 
 biglog('CORE quiz',"green");
 
@@ -99,36 +28,36 @@ rl.on('line', (line) => {
             break;
         case 'h':
         case 'help':
-            helpCmd();
+            cmds.helpCmd(rl);
             break;
         case 'q':
         case 'quit':
-            quitCmd();
+            cmds.quitCmd(rl);
             break;
         case 'list':
-            listCmd();
+            cmds.listCmd(rl);
             break;
         case 'show':
-            showCmd(args[1]);
+            cmds.showCmd(rl, args[1]);
             break;
         case 'add':
-            addCmd();
+            cmds.addCmd(rl);
             break;
         case 'delete':
-            deleteCmd(args[1]);
+            cmds.deleteCmd(rl, args[1]);
             break;
         case 'edit':
-            editCmd(args[1]);
+            cmds.editCmd(rl, args[1]);
             break;
         case 'test':
-            testCmd(args[1]);
+            cmds.testCmd(rl, args[1]);
             break;
         case 'p':
         case 'play':
-            playCmd();
+            cmds.playCmd(rl);
             break;
         case 'credits':            
-            creditsCmd();
+            cmds.creditsCmd(rl);
             break;
         default:
             console.log(`Comando desconocido '${colorize(cmd,'red')}'`);
@@ -141,61 +70,4 @@ rl.on('line', (line) => {
   process.exit(0);
 });
 
-const helpCmd = () => {
-    log('Comandos:', 'blue');
-    log('   h|help          Muestra esta ayuda', 'blue');
-    log('   list            Lista de quizers existentes', 'blue');
-    log('   show <id>       Muestra la pregunta y la respuesta del quiz indicado', 'blue');
-    log('   add             Añade un nuevo quiz interactivamente', 'blue');
-    log('   delete <id>     Borra el quiz indicado', 'blue');
-    log('   edit <id>       Edita el quiz indicado', 'blue');
-    log('   test <id>       Prueba el quiz indicado', 'blue');
-    log('   p|play          Comienza el juego', 'blue');
-    log('   credits         Créditos', 'blue');
-    log('   q|quit          Sale del programa', 'blue');
-    rl.prompt();
-};
 
-const quitCmd = () => {
-    rl.close();
-};
-
-const listCmd = () => {
-    log('   list            Lista de quizers existentes', 'red');
-    rl.prompt();
-};
-
-const showCmd = id => {
-    log('   show <id>       Muestra la pregunta y la respuesta del quiz indicado', 'red');
-    rl.prompt();
-};
-
-const addCmd = () => {
-    log('   add             Añade un nuevo quiz interactivamente', 'red');
-    rl.prompt();
-};
-
-const deleteCmd = id => {
-    log('   delete <id>     Borra el quiz indicado', 'red');
-    rl.prompt();
-};
-
-const editCmd = id => {
-    log('   edit <id>       Edita el quiz indicado', 'red');
-    rl.prompt();
-};
-
-const testCmd = id => {
-    log('   test <id>       Prueba el quiz indicado', 'red');
-    rl.prompt();
-};
-
-const playCmd = () => {
-    log('   p|play          Comienza el juego', 'red');
-    rl.prompt();
-};
-
-const creditsCmd = () => {           
-    log('   credits         Créditos', 'red');
-    rl.prompt();
-};
