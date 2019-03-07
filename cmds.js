@@ -22,29 +22,68 @@ exports.quitCmd = rl => {
 };
 
 exports.listCmd = rl => {
-    log('   list            Lista de quizers existentes', 'red');
+    model.getAll().forEach((quiz, id) => {
+        log(`   [${colorize(id, 'magenta')}]:    ${quiz.question}`);
+    });
     rl.prompt();
 };
 
 exports.showCmd = (rl, id) => {
-    log('   show <id>       Muestra la pregunta y la respuesta del quiz indicado', 'red');
+    if(typeof id === 'undefined') {
+        errlog('Falta el parámetro id');
+    } else {
+        try {
+            const quiz = model.getByIndex(id);
+            log(`   [${colorize(id, 'magenta')}]:   ${quiz.question}    ${colorize(quiz.answer, 'green')}`);
+        } catch(er) {
+            errlog(er);
+        }
+    }
     rl.prompt();
 };
 
 exports.addCmd = (rl) => {
-    log('   add             Añade un nuevo quiz interactivamente', 'red');
-    rl.prompt();
+    rl.question(colorize('Introduzca un pregunta:', 'red'), question => {
+        rl.question(colorize('Introduzca la respuesta:', 'red'), answer => {
+            model.add(question, answer);
+            log(`Se ha añadido ${colorize(question, 'red')} ${colorize(answer, 'green')}`);
+            rl.prompt();
+        });
+    });
 };
 
 exports.deleteCmd = (rl, id) => {
-    log('   delete <id>     Borra el quiz indicado', 'red');
+
+    if(typeof id === 'undefined') {
+        errlog('Falta el parámetro id');
+    } else {
+        try {
+            model.deleteByIndex(id);
+        } catch(er) {
+            errlog(er);
+        }
+    }
+
     rl.prompt();
 };
 
 exports.editCmd = (rl, id) => {
-    log('   edit <id>       Edita el quiz indicado', 'red');
-    rl.prompt();
-};
+
+    if(typeof id === 'undefined') {
+        errlog('Falta el parámetro id');
+    } else {
+        try {
+            rl.question(colorize('Introduzca un pregunta:', 'red'), question => {
+                rl.question(colorize('Introduzca la respuesta:', 'red'), answer => {
+                    model.update(id, question, answer);
+                    log(`Se ha añadido ${colorize(question, 'red')} ${colorize(answer, 'green')}`);
+                    rl.prompt();
+                });
+            });        
+        } catch(er) {
+            errlog(er);
+        }
+    }};
 
 exports.testCmd = (rl, id) => {
     log('   test <id>       Prueba el quiz indicado', 'red');
@@ -57,6 +96,6 @@ exports.playCmd = (rl) => {
 };
 
 exports.creditsCmd = (rl) => {           
-    log('   credits         Créditos', 'red');
+    log(`${colorize('Carlos','red')} ${colorize('Vázquez','yellow')} ${colorize('Jorge','magenta')}`);
     rl.prompt();
 };

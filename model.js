@@ -18,13 +18,20 @@ let quizzes = [
     }
 
 ];
+
+exports.getAll = () => {
+    return JSON.parse(JSON.stringify(quizzes));
+};
+
 exports.count = () => quizzes.length;
+
 exports.add = (question, answer) => {
     quizzes.push({
         question:(question || "").trim(),
         answer:(answer || "").trim()
     });
 };
+
 exports.update = (id, question, answer) => {
     const quiz = quizzes[id];
     if( typeof quiz === "undefined") {
@@ -35,7 +42,7 @@ exports.update = (id, question, answer) => {
         answer:(answer || "").trim()
     });
 };
-exports.getAll = () => {JSON.parse(JSON.stringify(quizzes))};
+
 exports.getByIndex = id => {
     const quiz = quizzes[id];
     if( typeof quiz === "undefined") {
@@ -43,10 +50,15 @@ exports.getByIndex = id => {
     }
     return JSON.parse(JSON.stringify(quiz));
 };
+
 exports.deleteByIndex = id => {
     const quiz = quizzes[id];
     if( typeof quiz === "undefined") {
         throw new Error("El valor del parámetro id no es válido");
     }
-    quizzes.slice(id, 1);
-}
+    try {
+        quizzes.slice(id, 1,null);
+    } catch(er) {
+        console.log(er);
+    }
+};
