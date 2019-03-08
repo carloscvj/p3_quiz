@@ -86,11 +86,27 @@ exports.editCmd = (rl, id) => {
         } catch(er) {
             errlog(er);
         }
-    }};
+    }
+};
 
 exports.testCmd = (rl, id) => {
-    log('   test <id>       Prueba el quiz indicado', 'red');
-    rl.prompt();
+    if(typeof id === 'undefined') {
+        errlog('Falta el parámetro id');
+    } else {
+        try {
+            let quiz = model.getByIndex(id);
+            rl.question(colorize(quiz.question, 'red'), answer => {
+                    if(answer === quiz.answer) {
+                        log('CORRECTO', 'green');
+                    } else {
+                        log('FALLASTE, FATAL, FATAL', 'red');
+                    }
+                    rl.prompt();
+            });
+        } catch(er) {
+            errlog(er);
+        }
+    }
 };
 
 exports.playCmd = (rl) => {
