@@ -96,10 +96,11 @@ exports.testCmd = (rl, id) => {
         try {
             let quiz = model.getByIndex(id);
             rl.question(colorize(quiz.question, 'red'), answer => {
+                    log('Su respuesta es', 'magenta');
                     if(answer === quiz.answer) {
-                        log('CORRECTO', 'green');
+                        biglog('CORRECTA', 'green');
                     } else {
-                        log('FALLASTE, FATAL, FATAL', 'red');
+                        biglog('INCORRETA', 'red');
                     }
                     rl.prompt();
             });
@@ -110,8 +111,39 @@ exports.testCmd = (rl, id) => {
 };
 
 exports.playCmd = (rl) => {
-    log('   p|play          Comienza el juego', 'red');
-    rl.prompt();
+    let score = 0;
+    let toBeResolve = [];
+    model.getAll().forEach( (ele, id)=>{
+        toBeResolve.push(id);
+    });
+    const playOne = () => {
+        if(toBeResolve.length === 0) {
+            log('FIN DEL JUEGO', 'red');
+            rl.prompt();
+        } else {
+            let tmpId=Math.floor(Math.random()*toBeResolve.length);
+            let id=toBeResolve[tmpId];
+            let quiz=model.getByIndex(id);
+            toBeResolve.splice(tmpId, 1);
+            rl.question(colorize(quiz.question, 'red'), answer => {
+                log('Su respuesta es', 'magenta');
+                if(answer === quiz.answer) {
+                    biglog('CORRECTA', 'green');
+                    score++;
+                    log('Respuestas correctas', 'magenta');
+                    biglog(score, 'green');
+                    playOne();
+                } else {
+                    biglog('INCORRETA', 'red');
+                    log('FIN DEL JUEGO', 'red');
+                    rl.prompt();
+                }
+            });
+        }
+    }
+    playOne();
+    
+    
 };
 
 exports.creditsCmd = (rl) => {           
