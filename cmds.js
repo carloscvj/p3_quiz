@@ -73,7 +73,10 @@ exports.editCmd = (rl, id) => {
         errlog('Falta el parámetro id');
     } else {
         try {
+            let quiz = model.getByIndex(id);
+            process.stdout.isTTY && setTimeout(()=>{rl.write(quiz.question)},1);
             rl.question(colorize('Introduzca un pregunta:', 'red'), question => {
+                process.stdout.isTTY && setTimeout(()=>{rl.write(quiz.answer)},1);
                 rl.question(colorize('Introduzca la respuesta:', 'red'), answer => {
                     model.update(id, question, answer);
                     log(`Se ha añadido ${colorize(question, 'red')} ${colorize(answer, 'green')}`);
