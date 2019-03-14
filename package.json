@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/carloscvj/quiz.git"
+    "url": "git+ssh://git@github.com/carloscvj/p3_quiz.git"
   },
   "keywords": [
     "quiz",
@@ -20,11 +20,13 @@
   "author": "Carlos V.",
   "license": "Unlicense",
   "bugs": {
-    "url": "https://github.com/carloscvj/quiz/issues"
+    "url": "https://github.com/carloscvj/p3_quiz/issues"
   },
-  "homepage": "https://github.com/carloscvj/quiz#readme",
+  "homepage": "https://github.com/carloscvj/p3_quiz#readme",
   "dependencies": {
     "chalk": "^2.4.2",
-    "figlet": "^1.2.1"
+    "figlet": "^1.2.1",
+    "sequelize": "^5.1.0",
+    "sqlite3": "^4.0.6"
   }
 }
