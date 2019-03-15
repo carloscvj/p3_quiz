@@ -1,9 +1,9 @@
-const readline = require('readline');
+const Sequelize = require('sequelize');
 const {colorize,log, biglog, errlog} = require('./out');
 const {models} = require('./model');
 
 const validateId = id => {
-    return new Promise((resolve, reject) => {
+    return new Sequelize.Promise((resolve, reject) => {
         if(typeof id === 'undefined') {
             reject(new Error('Falta el parametro <id>'));
         } else {
@@ -18,7 +18,7 @@ const validateId = id => {
 };
 
 const makeQuestion = (rl, test) => {
-    return new Promise((resolve, reject) => {
+    return new Sequelize.Promise((resolve, reject) => {
         rl.question(colorize(test, 'red'), answer => {
             resolve(answer.trim());
         });
@@ -57,7 +57,7 @@ exports.listCmd = rl => {
 
 exports.showCmd = (rl, id) => {
     validateId(id)
-    .then(id = models.quiz.findById(id))
+    .then(id => models.quiz.findById(id))
     .then(quiz => {
         if(!quiz) {
             throw new Error(`No existe el error asociado al id ${id}`);
@@ -67,7 +67,7 @@ exports.showCmd = (rl, id) => {
     .catch(er => {
         errlog(er.message);
     })
-    .then( rl => {
+    .then(rl => {
         rl.prompt();
     });
 };
@@ -87,11 +87,11 @@ exports.addCmd = (rl) => {
         log(`Se ha añadido ${colorize(question, 'red')} ${colorize(answer, 'green')}`);
     })
     .catch(Sequelize.validationError, er => {
-        errorlog('El quiz es erróneo');
-        er.erros.forEach(({mer}) => errorlog(mer));
+        errlog('El quiz es erróneo');
+        er.erros.forEach(({mer}) => errlog(mer));
     })
     .catch(er => {
-        errorlog(er.message);
+        errlog(er.message);
     })
     .then(() => {
         rl.prompt();
@@ -100,40 +100,51 @@ exports.addCmd = (rl) => {
 };
 
 exports.deleteCmd = (rl, id) => {
-
-    if(typeof id === 'undefined') {
-        errlog('Falta el parámetro id');
-    } else {
-        try {
-            model.deleteByIndex(id);
-        } catch(er) {
-            errlog(er);
-        }
-    }
-
-    rl.prompt();
+    validateId(id)
+    .then(id => models.quiz.destroy({where: {id}}))
+    .catch(er => {
+        errlog(er.message);
+    })
+    .then(() => {
+        rl.prompt();
+    });
 };
 
 exports.editCmd = (rl, id) => {
-
-    if(typeof id === 'undefined') {
-        errlog('Falta el parámetro id');
-    } else {
-        try {
-            let quiz = model.getByIndex(id);
-            process.stdout.isTTY && setTimeout(()=>{rl.write(quiz.question)},1);
-            rl.question(colorize('Introduzca un pregunta:', 'red'), question => {
-                process.stdout.isTTY && setTimeout(()=>{rl.write(quiz.answer)},1);
-                rl.question(colorize('Introduzca la respuesta:', 'red'), answer => {
-                    model.update(id, question, answer);
-                    log(`Se ha añadido ${colorize(question, 'red')} ${colorize(answer, 'green')}`);
-                    rl.prompt();
-                });
-            });        
-        } catch(er) {
-            errlog(er);
+    validateId(id)
+    .then(id => models.quiz.findById(id))
+    .then(quiz => {
+        if(!quiz) {
+            throw new Error(`No existe un quiz asociado al id=${id}`);
         }
-    }
+        process.stdout.isTTY && setTimeout(()=>{rl.write(quiz.question)},1);
+        return makeQuestion(rl, 'Introduzca una pregunta:')
+        .then(q => {
+            return makeQuestion(rl, 'Introduzca la respuesta:')
+            .then(a => {
+                quiz.question = q;
+                quiz.question = a;
+                return quiz;
+            });
+        });
+    })
+    .then(quiz => {
+        return quiz.save();
+    })
+    .then(quiz => {
+        log(`Se ha añadido ${colorize(question, 'red')} ${colorize(answer, 'green')}`);
+    })
+    .catch(Sequelize.validationError, er => {
+        errlog('El quiz es erróneo');
+        er.erros.forEach(({mer}) => errlog(mer));
+    })
+    .catch(er => {
+        errlog(er.message);
+    })
+    .then(() => {
+        rl.prompt();
+    });
+
 };
 
 exports.testCmd = (rl, id) => {
